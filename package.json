@@ -2,12 +2,20 @@
   "name": "queuepoint",
   "version": "1.0.0",
   "description": "QueuePoint is a general-purpose queue management system\r for physical spaces such as hospitals, banks, and public offices.",
-  "type" : "module",
-  "main": "index.js",
+  "type": "module",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^25.1.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3"
+  }
 }
