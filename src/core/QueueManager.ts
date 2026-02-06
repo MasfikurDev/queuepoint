@@ -1,6 +1,6 @@
 // src/core/QueueManager.ts
-import { Queue } from './Queue.js'
-import { Token } from './Token.js'
+import { Queue } from './models/Queue.js'
+import { Token } from './models/Token.js'
 import { randomUUID } from 'node:crypto'
 
 

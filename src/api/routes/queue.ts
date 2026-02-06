@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { queueManager } from '../context.js'
-import { Queue } from '../../core/Queue.js';
+import { Queue } from '../../core/models/Queue.js';
 
 export async function queueRoutes(app: FastifyInstance) {
     // Create a new queue 
