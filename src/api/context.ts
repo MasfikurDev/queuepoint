@@ -1,3 +1,3 @@
-import { QueueManager } from '../core/QueueManager.js'
+import { QueueService } from '../services/QueueService.js'
 
-export const queueManager = new QueueManager()
+export const queueService = new QueueService()
