@@ -5,20 +5,28 @@
   "type": "module",
   "main": "index.ts",
   "scripts": {
-    "dev": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "Masfikur Rahman",
   "license": "ISC",
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.1.0",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
-    "dotenv": "^17.2.3"
+    "@fastify/cors": "^11.2.0",
+    "@fastify/static": "^9.0.0",
+    "better-sqlite3": "^12.6.2",
+    "dotenv": "^17.2.3",
+    "fastify": "^5.7.2"
   }
 }
