@@ -1,5 +1,6 @@
 import { buildServer } from './api/server.js'
 
+
 const server = buildServer()
 
 const PORT = Number(process.env.PORT) || 3000

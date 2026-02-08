@@ -4,3 +4,6 @@ node_modules/
 logs/
 dist/
 *.http
+*.db
+*.db-wal
+*.db-shm

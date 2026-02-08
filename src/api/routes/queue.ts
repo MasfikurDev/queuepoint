@@ -1,28 +1,122 @@
-import { FastifyInstance } from 'fastify'
-import { queueService } from '../context.js'
+import { FastifyInstance } from 'fastify';
+import { QueueService } from '../../services/QueueService.js';
+
+const service = new QueueService();
 
 export async function queueRoutes(app: FastifyInstance) {
-  app.post('/queues', async (request) => {
-    const { name } = request.body as { name: string }
-    return queueService.createQueue(name)
-  })
 
-  app.get('/queues', async () => {
-    return queueService.getAllQueues()
-  })
+    // Create queue
+    app.post('/queues', {
+        schema: {
+            body: {
+                type: 'object',
+                required: ['accountId', 'name'],
+                additionalProperties: false,
+                properties: {
+                    accountId: {
+                        type: 'string',
+                        format: 'uuid',
+                    },
+                    name: {
+                        type: 'string',
+                        minLength: 1,
+                        maxLength: 100,
+                    },
+                },
+            },
+            response: {
+                200: {
+                    type: 'object',
+                    properties: {
+                        id: { type: 'string', format: 'uuid' },
+                        accountId: { type: 'string', format: 'uuid' },
+                        name: { type: 'string' },
+                        status: { type: 'string' },
+                        createdAt: { type: 'string' },
+                        updatedAt: { type: 'string' },
+                    },
+                },
+            },
+        },
+    }, async (req) => {
+        const { accountId, name } = req.body as {
+            accountId: string;
+            name: string;
+        };
 
-  app.post('/queues/:id/token', async (request) => {
-    const { id } = request.params as { id: string }
-    return queueService.issueToken(id)
-  })
+        return service.createQueue(accountId, name);
+    });
 
-  app.post('/queues/:id/next', async (request) => {
-    const { id } = request.params as { id: string }
-    return queueService.callNext(id)
-  })
+    app.get('/queues', {
+        schema: {
+            response: {
+                200: {
+                    type: 'array',
+                    items: {
+                        type: 'object',
+                        properties: {
+                            id: { type: 'string', format: 'uuid' },
+                            accountId: { type: 'string', format: 'uuid' },
+                            name: { type: 'string' },
+                            status: { type: 'string' },
+                            createdAt: { type: 'string' },
+                            updatedAt: { type: 'string' },
+                        },
+                    },
+                },
+            },
+        },
+    }, async () => {
+        return service.getAllQueues();
+    });
 
-  app.get('/queues/:id', async (request) => {
-    const { id } = request.params as { id: string }
-    return queueService.snapshot(id)
-  })
+    app.get('/queues/:id', {
+        schema: {
+            params: {
+                type: 'object',
+                required: ['id'],
+                properties: {
+                    id: { type: 'string', format: 'uuid' },
+                },
+            },
+        },
+    }, async (req) => {
+        const { id } = req.params as { id: string };
+        return service.getQueue(id);
+    });
+
+    // Issue token
+
+    app.post('/queues/:id/token', {
+        schema: {
+            params: {
+                type: 'object',
+                required: ['id'],
+                properties: {
+                    id: { type: 'string', format: 'uuid' },
+                },
+            },
+        },
+    }, async (req) => {
+        const { id } = req.params as { id: string };
+        return service.issueToken(id);
+    });
+
+
+    // Call next token
+
+    app.post('/queues/:id/next', {
+        schema: {
+            params: {
+                type: 'object',
+                required: ['id'],
+                properties: {
+                    id: { type: 'string', format: 'uuid' },
+                },
+            },
+        },
+    }, async (req) => {
+        const { id } = req.params as { id: string };
+        return service.callNext(id);
+    });
 }
