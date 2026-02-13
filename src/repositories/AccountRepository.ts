@@ -51,4 +51,15 @@ export class AccountRepository {
             updatedAt: new Date(row.updated_at),
         };
     }
+
+    findAll(): Account[] {
+        const rows = db.prepare(`SELECT * FROM accounts`).all() as AccountRow[];
+        return rows.map(row => ({
+            id: row.id,
+            name: row.name,
+            type: row.type,
+            createdAt: new Date(row.created_at),
+            updatedAt: new Date(row.updated_at),
+        }));
+    }
 }
