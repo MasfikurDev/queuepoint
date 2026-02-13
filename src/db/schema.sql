@@ -27,3 +27,13 @@ CREATE TABLE IF NOT EXISTS tokens (
   served_at TEXT,
   FOREIGN KEY (queue_id) REFERENCES queues(id)
 );
+
+
+CREATE TABLE consumers (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT,
+  phone TEXT,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
