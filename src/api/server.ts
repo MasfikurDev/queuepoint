@@ -3,7 +3,7 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 
-import { queueRoutes } from './routes/queue.js'
+import { queueRoutes } from './routes/queues.js'
 
 export function buildServer() {
   const app = Fastify({
