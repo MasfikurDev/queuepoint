@@ -1,0 +1,130 @@
+@baseUrl = http://localhost:3000
+@accountId = "11111111-1111-1111-1111-111111111111"
+
+{{
+  const { faker } = require('@faker-js/faker');
+  exports.accountName = faker.company.name();
+
+  const depts = ["Emergency", "Pediatrics", "Radiology", "General Practice", "Cardiology", "Vaccination"];
+  const types = ["Intake", "Check-in", "Waitlist", "Priority Line", "Reception"];
+
+  // Randomly combined for realism
+  exports.queueName = `${faker.helpers.arrayElement(depts)} ${faker.helpers.arrayElement(types)}`;
+}}
+
+###############################################################################
+# ACCOUNTS
+###############################################################################
+
+### Create account
+# @name createAccount
+POST {{baseUrl}}/accounts
+Content-Type: application/json
+{
+  "name": "{{accountName}}",
+  "type": "business"
+}
+
+> {%
+  if (!response.body.id) {
+    throw new Error("Account id missing");
+  } else {
+    client.global.set('accountId', response.body.id);
+  }
+%}
+
+### Get account by id
+# @ref createAccount
+# @name getAccountById
+GET {{baseUrl}}/accounts/{{createAccount.id}}
+
+> {%
+  if (!response.body.id) {
+    throw new Error("Account not found");
+  }
+%}
+
+### List all accounts
+# @name listAccounts
+GET {{baseUrl}}/accounts
+
+> {%
+  if (!Array.isArray(response.body)) {
+    throw new Error("Expected array of accounts");
+  }
+%}
+
+###############################################################################
+# QUEUES
+###############################################################################
+
+### Get all queues
+# @name getQueues
+GET {{baseUrl}}/queues
+
+> {%
+  if (response.status !== 200) {
+    throw new Error("Expected 200");
+  }
+%}
+
+### Create a queue
+# @name createQueue
+POST {{baseUrl}}/queues
+Content-Type: application/json
+
+{
+  "accountId": "{{accountId}}",
+  "name": "{{queueName}}"
+}
+
+> {%
+  if (!response.body.id) {
+    throw new Error("Queue id missing");
+  }
+%}
+
+### Get queue by id
+# @ref createQueue
+# @name getQueueById
+GET {{baseUrl}}/queues/{{createQueue.id}}
+
+> {%
+  if (!response.body.id) {
+    throw new Error("Queue not found");
+  }
+%}
+
+###############################################################################
+# TOKENS
+###############################################################################
+
+### Issue token #1
+# @ref createQueue
+# @name issueToken1
+POST {{baseUrl}}/queues/{{createQueue.id}}/token
+
+### Issue token #2
+# @ref createQueue
+# @name issueToken2
+POST {{baseUrl}}/queues/{{createQueue.id}}/token
+
+### Call next token
+# @ref createQueue
+# @name callNext
+POST {{baseUrl}}/queues/{{createQueue.id}}/next
+
+> {%
+  if (response.body.status !== "called") {
+    throw new Error("Expected token to be called");
+  }
+%}
+
+###############################################################################
+# LOOP EXAMPLE
+###############################################################################
+
+### Loop through all queues
+# @ref getQueues
+# @loop for queue of getQueues
+GET {{baseUrl}}/queues/{{queue.id}}

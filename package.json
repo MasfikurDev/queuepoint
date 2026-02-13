@@ -16,6 +16,7 @@
   "author": "Masfikur Rahman",
   "license": "ISC",
   "devDependencies": {
+    "@faker-js/faker": "^10.3.0",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^25.1.0",
     "tsx": "^4.21.0",
