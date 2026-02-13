@@ -5,6 +5,7 @@ import cors from '@fastify/cors'
 
 import { accountRoutes } from './routes/accounts.js'
 import { queueRoutes } from './routes/queues.js'
+import { consumerRoutes } from './routes/consumers.js';
 
 export function buildServer() {
   const app = Fastify({
@@ -20,6 +21,9 @@ export function buildServer() {
 
   // Queue Routes
   app.register(queueRoutes);
+
+  // Consumer Routes 
+  app.register(consumerRoutes);
 
   app.get('/health', async () => {
     return { status: 'ok' }
