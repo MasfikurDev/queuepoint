@@ -1,68 +1,65 @@
 @baseUrl = http://localhost:3000
 
 ###############################################################################
-# VARIABLES & HELPERS (faker-free)
+# VARIABLES & HELPERS (fakerjs)
 ###############################################################################
 
 {{
-  const orgNames = [
-    "City General Hospital",
-    "Green Valley Clinic",
-    "Sunrise Medical Center",
-    "HopeCare Health Services"
-  ];
+  const { faker } = require('@faker-js/faker');
 
-  const queueNames = [
-    "Emergency Intake",
-    "Pediatrics Check-in",
-    "Radiology Waitlist",
-    "Cardiology Priority Line",
-    "Vaccination Reception"
-  ];
+  // Generate random organization name
+  const organizationName = faker.company.name();
 
-  const consumerNames = [
-    "Rahim Ahmed",
-    "Nusrat Jahan",
-    "Tanvir Hossain",
-    "Ayesha Rahman",
-    "Mehedi Hasan"
-  ];
+  // Generate random queue/service name
+  const queueName = faker.helpers.arrayElement([
+    'Emergency', 'Pediatrics', 'Radiology', 'Cardiology', 'Neurology', 
+    'Orthopedics', 'Dermatology', 'Oncology', 'Gynecology', 'Urology',
+    'Ophthalmology', 'Dental', 'Pharmacy', 'Laboratory', 'Physical Therapy'
+  ]) + ' ' + faker.helpers.arrayElement([
+    'Intake', 'Check-in', 'Waitlist', 'Priority Queue', 'Reception',
+    'Consultation', 'Triage', 'Registration', 'Screening', 'Follow-up'
+  ]);
 
-  const phones = [
-    "+8801712345678",
-    "+8801812345678",
-    "+8801912345678"
-  ];
+  // Generate random consumer name
+  const consumerName = faker.person.fullName();
 
-  function pick(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
+  // Generate random phone number using
+  const consumerPhone = faker.phone.number();
+
+  function createFakeUser(){
+    let firstName = faker.person.firstName();
+    let lastName = faker.person.lastName();
+    let name = firstName + " "+ lastName;
+    let phone = faker.phone.number();
+    let email = faker.internet.exampleEmail({firstName,lastName}).toLowerCase();
+    return {
+        name,phone,email
+    };
   }
 
-  function generateEmail(email){
-    const lowered = email.toLowerCase().replaceAll(" ","_");
-    return lowered + "@example.com";
-    
+  function createFakeConsumer(){
+    let firstName = faker.person.firstName();
+    let lastName = faker.person.lastName();
+    let name = firstName + " "+ lastName;
+    let phone = faker.phone.number();
+    let email = faker.internet.exampleEmail({firstName,lastName}).toLowerCase();
+    return {
+        name,phone,email
+    };
   }
 
-
-  exports.organizationName = pick(orgNames);
-  exports.queueName = pick(queueNames);
-  exports.consumerName = pick(consumerNames);
-  exports.consumerPhone = pick(phones);
-
-
-  let userName = pick(consumerNames)
-
-  exports.userName = userName;
-  exports.userPhone = pick(phones);
-  exports.userEmail = generateEmail(userName);
+  exports.user = createFakeUser();
+  exports.organizationName = organizationName;
+  exports.queueName = queueName;
+  exports.consumerName = consumerName;
+  exports.consumerPhone = consumerPhone;
 }}
 
 ###############################################################################
 # ORGANIZATIONS
 ###############################################################################
 
-### Create Organization
+### Create a new Organization
 # @name createOrganization
 POST {{baseUrl}}/organizations
 Content-Type: application/json
@@ -87,7 +84,7 @@ GET {{baseUrl}}/organizations/{{organizationId}}
 # QUEUES
 ###############################################################################
 
-### Create Queue
+### Create a new Queue
 # @name createQueue
 POST {{baseUrl}}/queues
 Content-Type: application/json
@@ -150,16 +147,16 @@ Content-Type: application/json
 
 {
   "name": "{{consumerName}}",
-  "phone": "{{consumerPhone}}0"
+  "phone": "{{consumerPhone}}"
 }
 
-# > {%
-#   if (!response.body.id) {
-#     throw new Error("Consumer id missing");
-#     //console.log(response.body)
-#   }
-#   client.global.set("consumerId2", response.body.id);
-# %}
+> {%
+  if (!response.body.id) {
+    throw new Error("Consumer id missing");
+    //console.log(response.body)
+  }
+  client.global.set("consumerId2", response.body.id);
+%}
 
 ### Get Consumer 2 by ID
 # @name getConsumer2ById
@@ -182,6 +179,7 @@ GET {{baseUrl}}/queues/{{queueId}}/consumers
 ### Issue Token #1
 POST {{baseUrl}}/queues/{{queueId}}/token
 Content-Type: application/json
+
 {
   "consumerId": "{{consumerId}}"
 }
@@ -195,6 +193,7 @@ Content-Type: application/json
 ### Issue Token #2
 POST {{baseUrl}}/queues/{{queueId}}/token
 Content-Type: application/json
+
 {
   "consumerId": "{{consumerId2}}"
 }
@@ -218,9 +217,9 @@ POST {{baseUrl}}/queues/{{queueId}}/next
 POST {{baseUrl}}/users
 Content-Type: application/json
 {
-  "name": "{{userName}}",
-  "phone": "{{userPhone}}",
-  "email": "{{userEmail}}"
+  "name": "{{user.name}}",
+  "phone": "{{user.phone}}",
+  "email": "{{user.email}}"
 }
 
 > {%
