@@ -38,10 +38,24 @@
     return arr[Math.floor(Math.random() * arr.length)];
   }
 
+  function generateEmail(email){
+    const lowered = email.toLowerCase().replaceAll(" ","_");
+    return lowered + "@example.com";
+    
+  }
+
+
   exports.organizationName = pick(orgNames);
   exports.queueName = pick(queueNames);
   exports.consumerName = pick(consumerNames);
   exports.consumerPhone = pick(phones);
+
+
+  let userName = pick(consumerNames)
+
+  exports.userName = userName;
+  exports.userPhone = pick(phones);
+  exports.userEmail = generateEmail(userName);
 }}
 
 ###############################################################################
@@ -136,16 +150,16 @@ Content-Type: application/json
 
 {
   "name": "{{consumerName}}",
-  "phone": "{{consumerPhone}}"
+  "phone": "{{consumerPhone}}0"
 }
 
-> {%
-  if (!response.body.id) {
-    throw new Error("Consumer id missing");
-    //console.log(response.body)
-  }
-  client.global.set("consumerId2", response.body.id);
-%}
+# > {%
+#   if (!response.body.id) {
+#     throw new Error("Consumer id missing");
+#     //console.log(response.body)
+#   }
+#   client.global.set("consumerId2", response.body.id);
+# %}
 
 ### Get Consumer 2 by ID
 # @name getConsumer2ById
@@ -196,5 +210,32 @@ POST {{baseUrl}}/queues/{{queueId}}/next
 > {%
   if (response.body.status !== "called") {
     throw new Error("Expected token to be called");
+  }
+%}
+
+### Create User
+# @name createUser
+POST {{baseUrl}}/users
+Content-Type: application/json
+{
+  "name": "{{userName}}",
+  "phone": "{{userPhone}}",
+  "email": "{{userEmail}}"
+}
+
+> {%
+  if (!response.body.id) {
+    throw new Error("User id missing");
+  }
+  client.global.set("userId", response.body.id);
+%}
+
+### List All Users
+# @name listUsers
+GET {{baseUrl}}/users
+
+> {%
+  if (!Array.isArray(response.body)) {
+    throw new Error("Expected array of users");
   }
 %}

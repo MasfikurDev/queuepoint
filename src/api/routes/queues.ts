@@ -9,23 +9,10 @@ export async function queueRoutes(app: FastifyInstance) {
 
     /* ------------------------------------------------------------------
      * QUEUES
-     * ------------------------------------------------------------------ 
-    */
+     * ------------------------------------------------------------------ */
 
     // Create queue
-    app.post('/queues', {
-        schema: {
-            body: {
-                type: 'object',
-                required: ['organizationId', 'name'],
-                additionalProperties: false,
-                properties: {
-                    organizationId: { type: 'string', format: 'uuid' },
-                    name: { type: 'string', minLength: 1, maxLength: 100 },
-                },
-            },
-        },
-    }, async (req) => {
+    app.post('/queues', async (req) => {
         const { organizationId, name } = req.body as {
             organizationId: string;
             name: string;
@@ -48,27 +35,7 @@ export async function queueRoutes(app: FastifyInstance) {
      * ------------------------------------------------------------------ */
 
     // Create WALK-IN (temporary) consumer
-    app.post('/queues/:id/consumers', {
-        schema: {
-            params: {
-                type: 'object',
-                required: ['id'],
-                properties: {
-                    id: { type: 'string', format: 'uuid' },
-                },
-            },
-            body: {
-                type: 'object',
-                required: ['name'],
-                additionalProperties: false,
-                properties: {
-                    name: { type: 'string', minLength: 1 },
-                    email: { type: 'string', format: 'email', nullable: true },
-                    phone: { type: 'string', nullable: true },
-                },
-            },
-        },
-    }, async (req) => {
+    app.post('/queues/:id/consumers', async (req) => {
         const { id: queueId } = req.params as { id: string };
         const { name, email, phone } = req.body as {
             name: string;
@@ -80,25 +47,7 @@ export async function queueRoutes(app: FastifyInstance) {
     });
 
     // Create AUTHENTICATED consumer
-    app.post('/queues/:id/consumers/authenticated', {
-        schema: {
-            params: {
-                type: 'object',
-                required: ['id'],
-                properties: {
-                    id: { type: 'string', format: 'uuid' },
-                },
-            },
-            body: {
-                type: 'object',
-                required: ['userId'],
-                additionalProperties: false,
-                properties: {
-                    userId: { type: 'string', format: 'uuid' },
-                },
-            },
-        },
-    }, async (req) => {
+    app.post('/queues/:id/consumers/authenticated', async (req) => {
         const { id: queueId } = req.params as { id: string };
         const { userId } = req.body as { userId: string };
 

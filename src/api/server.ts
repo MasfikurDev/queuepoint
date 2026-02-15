@@ -5,6 +5,7 @@ import cors from '@fastify/cors'
 
 import { organizationRoutes } from './routes/organizations.js'
 import { queueRoutes } from './routes/queues.js'
+import { userRoutes } from './routes/users.js';
 
 export function buildServer() {
   const app = Fastify({
@@ -14,8 +15,11 @@ export function buildServer() {
   app.register(cors, {
     origin: true
   });
+  
+  // User Routes
+  app.register(userRoutes);
 
-  // Account Routes
+  // Organization Routes
   app.register(organizationRoutes);
 
   // Queue Routes
