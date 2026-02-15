@@ -7,10 +7,10 @@ export type TokenStatus =
 
 export interface Token {
   id: string;           // UUID
-  queueId: string;      // FK → Queue.id
-  consumerId?: string;  // FK → Consumer.id (optional)
+  queueId: string;      // FK - Queue.id
+  consumerId?: string;  // FK - Consumer.id (optional)
 
-  number: number;       // 1, 2, 3...
+  number: number;       
   status: TokenStatus;
 
   issuedAt: Date;

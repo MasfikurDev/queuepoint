@@ -1,12 +1,12 @@
-// src/api/routes/accounts.ts
+// src/api/routes/organizations.ts
 import { FastifyInstance } from 'fastify';
-import { AccountService } from '../../services/AccountService.js';
+import { OrganizationService } from '../../services/OrganizationService.js';
 
-const service = new AccountService();
+const service = new OrganizationService();
 
-export async function accountRoutes(app: FastifyInstance) {
-  // Create account
-  app.post('/accounts', {
+export async function organizationRoutes(app: FastifyInstance) {
+  // Create Organization
+  app.post('/organizations', {
     schema: {
       body: {
         type: 'object',
@@ -32,11 +32,11 @@ export async function accountRoutes(app: FastifyInstance) {
     },
   }, async (req) => {
     const { name, type } = req.body as { name: string; type: 'business' | 'individual' };
-    return service.createAccount(name, type);
+    return service.createOrganization(name, type);
   });
 
-  // Get single account
-  app.get('/accounts/:id', {
+  // Get single organization
+  app.get('/organizations/:id', {
     schema: {
       params: {
         type: 'object',
@@ -48,16 +48,16 @@ export async function accountRoutes(app: FastifyInstance) {
     },
   }, async (req, reply) => {
     const { id } = req.params as { id: string };
-    const account = service.getAccount(id);
-    if (!account) {
+    const organization = service.getOrganization(id);
+    if (!organization) {
       reply.status(404);
-      return { error: 'Account not found' };
+      return { error: 'organization not found' };
     }
-    return account;
+    return organization;
   });
 
-  // List all accounts
-  app.get('/accounts', async () => {
-    return service.listAccounts();
+  // List all organizations
+  app.get('/organizations', async () => {
+    return service.listOrganizations();
   });
 }

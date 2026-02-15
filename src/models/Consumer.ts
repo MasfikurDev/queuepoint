@@ -1,8 +1,13 @@
 export interface Consumer {
-  id: string;           // UUID
+  id: string;
+  queueId: string; // FK - Queue.id
+  userId?: string; // FK - User.id
+
   name: string;
   email?: string;
   phone?: string;
+  isTemporary: boolean;
+
   createdAt: Date;
-  updatedAt: Date;
+  expiresAt: Date;
 }

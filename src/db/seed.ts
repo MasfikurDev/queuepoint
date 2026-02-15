@@ -1,11 +1,8 @@
-import { AccountsSeeder } from "./seeders/AccountsSeeder.js";
+
 
 
 async function run() {
   console.log('🌱 Seeding database...\n');
-
-  await AccountsSeeder.run();
-
   console.log('\n🌱 Seeding complete');
 }
 

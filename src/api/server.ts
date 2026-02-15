@@ -3,9 +3,8 @@
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 
-import { accountRoutes } from './routes/accounts.js'
+import { organizationRoutes } from './routes/organizations.js'
 import { queueRoutes } from './routes/queues.js'
-import { consumerRoutes } from './routes/consumers.js';
 
 export function buildServer() {
   const app = Fastify({
@@ -17,13 +16,10 @@ export function buildServer() {
   });
 
   // Account Routes
-  app.register(accountRoutes);
+  app.register(organizationRoutes);
 
   // Queue Routes
   app.register(queueRoutes);
-
-  // Consumer Routes 
-  app.register(consumerRoutes);
 
   app.get('/health', async () => {
     return { status: 'ok' }

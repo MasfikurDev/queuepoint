@@ -1,7 +1,9 @@
-export interface Account {
+export interface User {
     id: string; // UUID
     name: string;
-    type: 'business' | 'individual';
+    email: string;
+    phone: string;
+
     createdAt: Date;
     updatedAt: Date;
 }

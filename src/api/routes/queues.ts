@@ -1,76 +1,54 @@
 import { FastifyInstance } from 'fastify';
 import { QueueService } from '../../services/QueueService.js';
+import { ConsumerService } from '../../services/ConsumerService.js';
 
-const service = new QueueService();
+const queueService = new QueueService();
+const consumerService = new ConsumerService();
 
 export async function queueRoutes(app: FastifyInstance) {
+
+    /* ------------------------------------------------------------------
+     * QUEUES
+     * ------------------------------------------------------------------ 
+    */
 
     // Create queue
     app.post('/queues', {
         schema: {
             body: {
                 type: 'object',
-                required: ['accountId', 'name'],
+                required: ['organizationId', 'name'],
                 additionalProperties: false,
                 properties: {
-                    accountId: {
-                        type: 'string',
-                        format: 'uuid',
-                    },
-                    name: {
-                        type: 'string',
-                        minLength: 1,
-                        maxLength: 100,
-                    },
-                },
-            },
-            response: {
-                200: {
-                    type: 'object',
-                    properties: {
-                        id: { type: 'string', format: 'uuid' },
-                        accountId: { type: 'string', format: 'uuid' },
-                        name: { type: 'string' },
-                        status: { type: 'string' },
-                        createdAt: { type: 'string' },
-                        updatedAt: { type: 'string' },
-                    },
+                    organizationId: { type: 'string', format: 'uuid' },
+                    name: { type: 'string', minLength: 1, maxLength: 100 },
                 },
             },
         },
     }, async (req) => {
-        const { accountId, name } = req.body as {
-            accountId: string;
+        const { organizationId, name } = req.body as {
+            organizationId: string;
             name: string;
         };
 
-        return service.createQueue(accountId, name);
+        return queueService.createQueue(organizationId, name);
     });
 
-    app.get('/queues', {
-        schema: {
-            response: {
-                200: {
-                    type: 'array',
-                    items: {
-                        type: 'object',
-                        properties: {
-                            id: { type: 'string', format: 'uuid' },
-                            accountId: { type: 'string', format: 'uuid' },
-                            name: { type: 'string' },
-                            status: { type: 'string' },
-                            createdAt: { type: 'string' },
-                            updatedAt: { type: 'string' },
-                        },
-                    },
-                },
-            },
-        },
-    }, async () => {
-        return service.getAllQueues();
+    app.get('/queues', async () => {
+        return queueService.getAllQueues();
     });
 
-    app.get('/queues/:id', {
+    app.get('/queues/:id', async (req) => {
+        const { id } = req.params as { id: string };
+        return queueService.getQueue(id);
+    });
+
+    /* ------------------------------------------------------------------
+     * CONSUMERS (QUEUE-SCOPED)
+     * ------------------------------------------------------------------ */
+
+    // Create WALK-IN (temporary) consumer
+    app.post('/queues/:id/consumers', {
         schema: {
             params: {
                 type: 'object',
@@ -79,44 +57,80 @@ export async function queueRoutes(app: FastifyInstance) {
                     id: { type: 'string', format: 'uuid' },
                 },
             },
+            body: {
+                type: 'object',
+                required: ['name'],
+                additionalProperties: false,
+                properties: {
+                    name: { type: 'string', minLength: 1 },
+                    email: { type: 'string', format: 'email', nullable: true },
+                    phone: { type: 'string', nullable: true },
+                },
+            },
         },
     }, async (req) => {
-        const { id } = req.params as { id: string };
-        return service.getQueue(id);
+        const { id: queueId } = req.params as { id: string };
+        const { name, email, phone } = req.body as {
+            name: string;
+            email?: string;
+            phone?: string;
+        };
+
+        return consumerService.createTemporaryConsumer(queueId, name, email, phone);
     });
+
+    // Create AUTHENTICATED consumer
+    app.post('/queues/:id/consumers/authenticated', {
+        schema: {
+            params: {
+                type: 'object',
+                required: ['id'],
+                properties: {
+                    id: { type: 'string', format: 'uuid' },
+                },
+            },
+            body: {
+                type: 'object',
+                required: ['userId'],
+                additionalProperties: false,
+                properties: {
+                    userId: { type: 'string', format: 'uuid' },
+                },
+            },
+        },
+    }, async (req) => {
+        const { id: queueId } = req.params as { id: string };
+        const { userId } = req.body as { userId: string };
+
+        return consumerService.createAuthenticatedConsumer(queueId, userId);
+    });
+
+    // List consumers in a queue
+    app.get('/queues/:id/consumers', async (req) => {
+        const { id: queueId } = req.params as { id: string };
+        return consumerService.getConsumersByQueue(queueId);
+    });
+
+    // Get consumer by id
+    app.get('/consumers/:id', async (req) => {
+        const { id } = req.params as { id: string };
+        return consumerService.getConsumer(id);
+    });
+
+    /* ------------------------------------------------------------------
+     * TOKENS
+     * ------------------------------------------------------------------ */
 
     // Issue token
-
-    app.post('/queues/:id/token', {
-        schema: {
-            params: {
-                type: 'object',
-                required: ['id'],
-                properties: {
-                    id: { type: 'string', format: 'uuid' },
-                },
-            },
-        },
-    }, async (req) => {
+    app.post('/queues/:id/token', async (req) => {
         const { id } = req.params as { id: string };
-        return service.issueToken(id);
+        const { consumerId } = req.body as { consumerId: string };
+        return queueService.issueToken(id, consumerId);
     });
 
-
     // Call next token
-
-    app.post('/queues/:id/next', {
-        schema: {
-            params: {
-                type: 'object',
-                required: ['id'],
-                properties: {
-                    id: { type: 'string', format: 'uuid' },
-                },
-            },
-        },
-    }, async (req) => {
+    app.post('/queues/:id/next', async (req) => {
         const { id } = req.params as { id: string };
-        return service.callNext(id);
+        return queueService.callNext(id);
     });
 }

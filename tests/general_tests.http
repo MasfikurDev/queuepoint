@@ -1,80 +1,85 @@
 @baseUrl = http://localhost:3000
-@accountId = "11111111-1111-1111-1111-111111111111"
+
+###############################################################################
+# VARIABLES & HELPERS (faker-free)
+###############################################################################
 
 {{
-  const { faker } = require('@faker-js/faker');
-  exports.accountName = faker.company.name();
+  const orgNames = [
+    "City General Hospital",
+    "Green Valley Clinic",
+    "Sunrise Medical Center",
+    "HopeCare Health Services"
+  ];
 
-  const depts = ["Emergency", "Pediatrics", "Radiology", "General Practice", "Cardiology", "Vaccination"];
-  const types = ["Intake", "Check-in", "Waitlist", "Priority Line", "Reception"];
+  const queueNames = [
+    "Emergency Intake",
+    "Pediatrics Check-in",
+    "Radiology Waitlist",
+    "Cardiology Priority Line",
+    "Vaccination Reception"
+  ];
 
-  // Randomly combined for realism
-  exports.queueName = `${faker.helpers.arrayElement(depts)} ${faker.helpers.arrayElement(types)}`;
+  const consumerNames = [
+    "Rahim Ahmed",
+    "Nusrat Jahan",
+    "Tanvir Hossain",
+    "Ayesha Rahman",
+    "Mehedi Hasan"
+  ];
+
+  const phones = [
+    "+8801712345678",
+    "+8801812345678",
+    "+8801912345678"
+  ];
+
+  function pick(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  exports.organizationName = pick(orgNames);
+  exports.queueName = pick(queueNames);
+  exports.consumerName = pick(consumerNames);
+  exports.consumerPhone = pick(phones);
 }}
 
 ###############################################################################
-# ACCOUNTS
+# ORGANIZATIONS
 ###############################################################################
 
-### Create account
-# @name createAccount
-POST {{baseUrl}}/accounts
+### Create Organization
+# @name createOrganization
+POST {{baseUrl}}/organizations
 Content-Type: application/json
+
 {
-  "name": "{{accountName}}",
+  "name": "{{organizationName}}",
   "type": "business"
 }
 
 > {%
   if (!response.body.id) {
-    throw new Error("Account id missing");
-  } else {
-    client.global.set('accountId', response.body.id);
+    throw new Error("Organization id missing");
   }
+  client.global.set("organizationId", response.body.id);
 %}
 
-### Get account by id
-# @ref createAccount
-# @name getAccountById
-GET {{baseUrl}}/accounts/{{createAccount.id}}
-
-> {%
-  if (!response.body.id) {
-    throw new Error("Account not found");
-  }
-%}
-
-### List all accounts
-# @name listAccounts
-GET {{baseUrl}}/accounts
-
-> {%
-  if (!Array.isArray(response.body)) {
-    throw new Error("Expected array of accounts");
-  }
-%}
+### Get Organization by ID
+# @name getOrganizationById
+GET {{baseUrl}}/organizations/{{organizationId}}
 
 ###############################################################################
 # QUEUES
 ###############################################################################
 
-### Get all queues
-# @name getQueues
-GET {{baseUrl}}/queues
-
-> {%
-  if (response.status !== 200) {
-    throw new Error("Expected 200");
-  }
-%}
-
-### Create a queue
+### Create Queue
 # @name createQueue
 POST {{baseUrl}}/queues
 Content-Type: application/json
 
 {
-  "accountId": "{{accountId}}",
+  "organizationId": "{{organizationId}}",
   "name": "{{queueName}}"
 }
 
@@ -82,16 +87,77 @@ Content-Type: application/json
   if (!response.body.id) {
     throw new Error("Queue id missing");
   }
+  client.global.set("queueId", response.body.id);
 %}
 
-### Get queue by id
-# @ref createQueue
+### Get Queue by ID
 # @name getQueueById
-GET {{baseUrl}}/queues/{{createQueue.id}}
+GET {{baseUrl}}/queues/{{queueId}}
+
+### List All Queues
+# @name listQueues
+GET {{baseUrl}}/queues
+> {%
+  if (!Array.isArray(response.body)) {
+    throw new Error("Expected array of queues");
+  }
+%}
+###############################################################################
+# CONSUMERS (QUEUE-SCOPED)
+###############################################################################
+
+### Create WALK-IN Consumer (Temporary)
+# @name createWalkInConsumer
+POST {{baseUrl}}/queues/{{queueId}}/consumers
+Content-Type: application/json
+
+{
+  "name": "{{consumerName}}",
+  "phone": "{{consumerPhone}}"
+}
 
 > {%
   if (!response.body.id) {
-    throw new Error("Queue not found");
+    throw new Error("Consumer id missing");
+    //console.log(response.body)
+  }
+  client.global.set("consumerId", response.body.id);
+%}
+
+### Get Consumer 1 by ID
+# @name getConsumerById
+GET {{baseUrl}}/consumers/{{consumerId}}
+
+
+### Create WALK-IN Consumer 2 (Temporary)
+# @name createWalkInConsumer2
+POST {{baseUrl}}/queues/{{queueId}}/consumers
+Content-Type: application/json
+
+{
+  "name": "{{consumerName}}",
+  "phone": "{{consumerPhone}}"
+}
+
+> {%
+  if (!response.body.id) {
+    throw new Error("Consumer id missing");
+    //console.log(response.body)
+  }
+  client.global.set("consumerId2", response.body.id);
+%}
+
+### Get Consumer 2 by ID
+# @name getConsumer2ById
+GET {{baseUrl}}/consumers/{{consumerId}}
+
+### List Consumers for Queue
+# @name listConsumersByQueue
+GET {{baseUrl}}/queues/{{queueId}}/consumers
+
+> {%
+  if (!Array.isArray(response.body)) {
+    throw new Error("Expected array of consumers");
   }
 %}
 
@@ -99,32 +165,36 @@ GET {{baseUrl}}/queues/{{createQueue.id}}
 # TOKENS
 ###############################################################################
 
-### Issue token #1
-# @ref createQueue
-# @name issueToken1
-POST {{baseUrl}}/queues/{{createQueue.id}}/token
+### Issue Token #1
+POST {{baseUrl}}/queues/{{queueId}}/token
+Content-Type: application/json
+{
+  "consumerId": "{{consumerId}}"
+}
 
-### Issue token #2
-# @ref createQueue
-# @name issueToken2
-POST {{baseUrl}}/queues/{{createQueue.id}}/token
-
-### Call next token
-# @ref createQueue
-# @name callNext
-POST {{baseUrl}}/queues/{{createQueue.id}}/next
+> {%
+  if (!response.body.id) {
+    throw new Error("Token id missing");
+  }
+  client.global.set("tokenId1", response.body.id);
+%}
+### Issue Token #2
+POST {{baseUrl}}/queues/{{queueId}}/token
+Content-Type: application/json
+{
+  "consumerId": "{{consumerId2}}"
+}
+# > {%
+#   if (!response.body.id) {
+#     throw new Error("Token id missing");
+#   }
+#   client.global.set("tokenId2", response.body.id);
+# %}
+### Call Next Token
+POST {{baseUrl}}/queues/{{queueId}}/next
 
 > {%
   if (response.body.status !== "called") {
     throw new Error("Expected token to be called");
   }
 %}
-
-###############################################################################
-# LOOP EXAMPLE
-###############################################################################
-
-### Loop through all queues
-# @ref getQueues
-# @loop for queue of getQueues
-GET {{baseUrl}}/queues/{{queue.id}}

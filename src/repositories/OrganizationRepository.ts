@@ -1,9 +1,9 @@
 
 import { randomUUID } from 'node:crypto';
-import { Account } from '../models/Account.js';
+import { Organization } from '../models/Organization.js';
 import { db } from '../db/index.js';
 
-type AccountRow = {
+type OrganizationRow = {
     id: string;
     name: string;
     type: 'business' | 'individual';
@@ -12,10 +12,10 @@ type AccountRow = {
 };
 
 
-export class AccountRepository {
-    create(name: string, type: Account['type']): Account {
+export class OrganizationRepository {
+    create(name: string, type: Organization['type']): Organization {
         const now = new Date();
-        const account: Account = {
+        const organization: Organization = {
             id: randomUUID(),
             name,
             type,
@@ -23,24 +23,21 @@ export class AccountRepository {
             updatedAt: now,
         };
 
-        db.prepare(`
-      INSERT INTO accounts (id, name, type, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?)
-    `).run(
-            account.id,
-            account.name,
-            account.type,
-            account.createdAt.toISOString(),
-            account.updatedAt.toISOString()
+        db.prepare(`INSERT INTO organizations (id, name, type, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`).run(
+            organization.id,
+            organization.name,
+            organization.type,
+            organization.createdAt.toISOString(),
+            organization.updatedAt.toISOString()
         );
 
-        return account;
+        return organization;
     }
 
-    findById(id: string): Account | null {
+    findById(id: string): Organization | null {
         const row = db
-            .prepare(`SELECT * FROM accounts WHERE id = ?`)
-            .get(id) as AccountRow | undefined;
+            .prepare(`SELECT * FROM organizations WHERE id = ?`)
+            .get(id) as OrganizationRow | undefined;
         if (!row) return null;
 
         return {
@@ -52,8 +49,8 @@ export class AccountRepository {
         };
     }
 
-    findAll(): Account[] {
-        const rows = db.prepare(`SELECT * FROM accounts`).all() as AccountRow[];
+    findAll(): Organization[] {
+        const rows = db.prepare(`SELECT * FROM organizations`).all() as OrganizationRow[];
         return rows.map(row => ({
             id: row.id,
             name: row.name,
