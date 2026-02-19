@@ -194,7 +194,7 @@ Content-Type: application/json
 
 ### Get Consumer 2 by ID
 # @name getConsumer2ById
-GET {{baseUrl}}/consumers/{{consumerId}}
+GET {{baseUrl}}/consumers/{{consumerId2}}
 
 ### List Consumers for Queue
 # @name listConsumersByQueue
