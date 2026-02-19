@@ -6,8 +6,8 @@ const service = new OrganizationService();
 export async function organizationRoutes(app: FastifyInstance) {
   // Create Organization
   app.post('/organizations', async (req) => {
-    const { name, type } = req.body as { name: string; type: 'business' | 'individual' };
-    return service.createOrganization(name, type);
+    const { userId, name, type } = req.body as { userId: string, name: string; type: 'business' | 'individual' };
+    return service.createOrganization(userId, name, type);
   });
 
   // Get single Organization

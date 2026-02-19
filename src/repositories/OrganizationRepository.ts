@@ -7,26 +7,29 @@ type OrganizationRow = {
     id: string;
     name: string;
     type: 'business' | 'individual';
+    created_by: string,
     created_at: string;
     updated_at: string;
 };
 
 
 export class OrganizationRepository {
-    create(name: string, type: Organization['type']): Organization {
+    create(createdBy: string, name: string, type: Organization['type']): Organization {
         const now = new Date();
         const organization: Organization = {
             id: randomUUID(),
             name,
             type,
+            createdBy,
             createdAt: now,
             updatedAt: now,
         };
 
-        db.prepare(`INSERT INTO organizations (id, name, type, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`).run(
+        db.prepare(`INSERT INTO organizations (id, name, type,created_by, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)`).run(
             organization.id,
             organization.name,
             organization.type,
+            organization.createdBy,
             organization.createdAt.toISOString(),
             organization.updatedAt.toISOString()
         );
@@ -44,6 +47,7 @@ export class OrganizationRepository {
             id: row.id,
             name: row.name,
             type: row.type,
+            createdBy: row.created_by,
             createdAt: new Date(row.created_at),
             updatedAt: new Date(row.updated_at),
         };
@@ -55,6 +59,7 @@ export class OrganizationRepository {
             id: row.id,
             name: row.name,
             type: row.type,
+            createdBy: row.created_by,
             createdAt: new Date(row.created_at),
             updatedAt: new Date(row.updated_at),
         }));

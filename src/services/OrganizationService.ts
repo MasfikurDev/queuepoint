@@ -5,8 +5,8 @@ import { OrganizationRepository } from '../repositories/OrganizationRepository.j
 export class OrganizationService {
   private repo = new OrganizationRepository();
 
-  createOrganization(name: string, type: Organization["type"]) {
-    return this.repo.create(name, type);
+  createOrganization(userId: string, name: string, type: Organization["type"]) {
+    return this.repo.create(userId, name, type);
   }
 
   getOrganization(id: string) {

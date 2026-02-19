@@ -23,7 +23,7 @@
   // Generate random consumer name
   const consumerName = faker.person.fullName();
 
-  // Generate random phone number using
+  // Generate random phone number
   const consumerPhone = faker.phone.number();
 
   function createFakeUser(){
@@ -55,6 +55,39 @@
   exports.consumerPhone = consumerPhone;
 }}
 
+
+### Create User
+# @name createUser
+POST {{baseUrl}}/users
+Content-Type: application/json
+{
+  "name": "{{user.name}}",
+  "phone": "{{user.phone}}",
+  "email": "{{user.email}}",
+  "password": "1234"
+}
+
+> {%
+  if (!response.body.id) {
+    throw new Error("User id missing");
+  }
+  client.global.set("userId", response.body.id);
+%}
+
+### Get User by ID
+# @name getUserById
+GET {{baseUrl}}/users/{{userId}}
+
+### List All Users
+# @name listUsers
+GET {{baseUrl}}/users
+
+> {%
+  if (!Array.isArray(response.body)) {
+    throw new Error("Expected array of users");
+  }
+%}
+
 ###############################################################################
 # ORGANIZATIONS
 ###############################################################################
@@ -65,6 +98,7 @@ POST {{baseUrl}}/organizations
 Content-Type: application/json
 
 {
+  "userId" : "{{userId}}",
   "name": "{{organizationName}}",
   "type": "business"
 }
@@ -209,32 +243,5 @@ POST {{baseUrl}}/queues/{{queueId}}/next
 > {%
   if (response.body.status !== "called") {
     throw new Error("Expected token to be called");
-  }
-%}
-
-### Create User
-# @name createUser
-POST {{baseUrl}}/users
-Content-Type: application/json
-{
-  "name": "{{user.name}}",
-  "phone": "{{user.phone}}",
-  "email": "{{user.email}}"
-}
-
-> {%
-  if (!response.body.id) {
-    throw new Error("User id missing");
-  }
-  client.global.set("userId", response.body.id);
-%}
-
-### List All Users
-# @name listUsers
-GET {{baseUrl}}/users
-
-> {%
-  if (!Array.isArray(response.body)) {
-    throw new Error("Expected array of users");
   }
 %}

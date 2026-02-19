@@ -8,13 +8,14 @@ export async function userRoutes(app: FastifyInstance) {
 
     // Create User
     app.post('/users', async (req) => {
-        const { name, phone, email } = req.body as {
+        const { name, phone, email,password } = req.body as {
             name: string,
             phone: string,
-            email: string
+            email: string,
+            password: string,
         };
 
-        return userService.createUser(name, phone, email);
+        return userService.createUser(name, phone, email,password);
     });
 
 

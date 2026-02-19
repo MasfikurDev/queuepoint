@@ -14,6 +14,7 @@ CREATE TABLE users (
   name TEXT NOT NULL,
   email TEXT UNIQUE,
   phone TEXT UNIQUE,
+  password_hash TEXT NOT NULL,
   created_at TEXT NOT NULL,
   updated_at TEXT NOT NULL
 );
@@ -22,9 +23,11 @@ CREATE TABLE organizations (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,
   type TEXT CHECK(type IN ('business','individual')) NOT NULL,
-
+  created_by TEXT NOT NULL,
   created_at TEXT NOT NULL,
-  updated_at TEXT NOT NULL
+  updated_at TEXT NOT NULL,
+
+  FOREIGN KEY (created_by) REFERENCES users(id)
 );
 
 
@@ -76,7 +79,7 @@ CREATE TABLE tokens (
   FOREIGN KEY (queue_id) REFERENCES queues(id),
   FOREIGN KEY (consumer_id) REFERENCES consumers(id),
 
-  UNIQUE (queue_id, consumer_id)
+  UNIQUE (queue_id, consumer_id),
   UNIQUE (queue_id, number)
 );
 
