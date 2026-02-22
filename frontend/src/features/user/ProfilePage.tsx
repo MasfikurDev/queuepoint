@@ -1,4 +1,7 @@
 import { useAuth } from "../../hooks/useAuth";
+import { Card, CardHeader, CardTitle } from "../../components/ui/Card";
+import { Input } from "../../components/ui/Input";
+import { Button } from "../../components/ui/Button";
 
 export default function ProfilePage() {
     const { user, logout } = useAuth();
@@ -6,7 +9,7 @@ export default function ProfilePage() {
     return (
         <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
             <div className="mx-auto max-w-4xl px-6 py-10">
-                {/* Header */}
+                {/* Header with Avatar */}
                 <div className="mb-8 flex items-center gap-4">
                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-xl font-semibold text-white">
                         {user?.name?.[0] ?? "U"}
@@ -21,60 +24,33 @@ export default function ProfilePage() {
                     </div>
                 </div>
 
-                {/* Profile Card */}
-                <div className="rounded-2xl border border-white/10 bg-slate-900/70 backdrop-blur shadow-xl">
-                    <div className="border-b border-white/10 px-6 py-4">
-                        <h2 className="text-lg font-medium text-white">
+                {/* Profile Details Card */}
+                <Card variant="glass" className="max-w-full">
+                    <CardHeader className="border-b border-white/10 px-6 py-4 text-left">
+                        <CardTitle className="text-lg">
                             Personal Details
-                        </h2>
-                    </div>
+                        </CardTitle>
+                    </CardHeader>
 
                     <div className="grid gap-6 px-6 py-6 sm:grid-cols-2">
-                        <div>
-                            <label className="block text-sm font-medium text-slate-400 mb-1">
-                                Full name
-                            </label>
-                            <input
-                                value={user?.name ?? "Demo User"}
-                                disabled
-                                className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 text-slate-300"
-                            />
-                        </div>
+                        <Input
+                            label="Full name"
+                            value={user?.name ?? "Demo User"}
+                            disabled
+                        />
 
-                        <div>
-                            <label className="block text-sm font-medium text-slate-400 mb-1">
-                                Email
-                            </label>
-                            <input
-                                value={user?.email ?? "demo@test.com"}
-                                disabled
-                                className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 text-slate-300"
-                            />
-                        </div>
+                        <Input
+                            label="Email"
+                            type="email"
+                            value={user?.email ?? "demo@test.com"}
+                            disabled
+                        />
 
-                        <div>
-                            <label className="block text-sm font-medium text-slate-400 mb-1">
-                                Phone
-                            </label>
-                            <input
-                                value="+880 1XXXXXXXXX"
-                                disabled
-                                className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 text-slate-300"
-                            />
-                        </div>
+                        <Input label="Phone" value="+880 1XXXXXXXXX" disabled />
 
-                        <div>
-                            <label className="block text-sm font-medium text-slate-400 mb-1">
-                                Account type
-                            </label>
-                            <input
-                                value="User"
-                                disabled
-                                className="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 text-slate-300"
-                            />
-                        </div>
+                        <Input label="Account type" value="User" disabled />
                     </div>
-                </div>
+                </Card>
 
                 {/* Actions */}
                 <div className="mt-8 flex items-center justify-between">
@@ -82,12 +58,14 @@ export default function ProfilePage() {
                         Editing will be enabled once backend auth is connected.
                     </p>
 
-                    <button
+                    <Button
                         onClick={logout}
-                        className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-400 transition hover:bg-red-500/20"
+                        colorScheme="danger"
+                        variant="outline"
+                        size="md"
                     >
                         Logout
-                    </button>
+                    </Button>
                 </div>
             </div>
         </div>
