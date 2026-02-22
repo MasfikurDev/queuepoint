@@ -1,22 +1,16 @@
 import { type ButtonHTMLAttributes, forwardRef } from "react";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    // Appearance
     variant?: "solid" | "outline" | "ghost";
     colorScheme?: "primary" | "secondary" | "danger" | "success" | "warning";
     size?: "xs" | "sm" | "md" | "lg" | "xl";
     rounded?: "none" | "sm" | "md" | "lg" | "full";
     fullWidth?: boolean;
-
-    // States
     loading?: boolean;
-
-    // Icons
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
-
-    // Animation
     animated?: boolean;
+    focusRing?: "none" | "subtle" | "ring" | "glow";
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -24,44 +18,30 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         {
             className = "",
             children,
-
-            // Appearance
             variant = "solid",
-            colorScheme = "primary", // Default is primary
+            colorScheme = "primary",
             size = "md",
             rounded = "md",
             fullWidth = false,
-
-            // States
             loading = false,
             disabled = false,
-
-            // Icons
             leftIcon,
             rightIcon,
-
-            // Animation
             animated = true,
-
+            focusRing = "subtle", // Default to subtle
             ...props
         },
         ref,
     ) => {
-        // Base styles
         const baseStyles =
             "inline-flex items-center justify-center font-medium transition-all";
-
-        // Animation styles
         const animationStyles =
             animated ? "active:scale-[0.97] duration-150" : "";
-
-        // Disabled styles
         const disabledStyles =
             disabled || loading ?
                 "opacity-50 pointer-events-none cursor-not-allowed"
             :   "";
 
-        // Size styles
         const sizes = {
             xs: "px-2 py-1 text-xs gap-1",
             sm: "px-3 py-1.5 text-sm gap-1.5",
@@ -70,7 +50,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             xl: "px-6 py-3.5 text-base gap-2.5",
         };
 
-        // Roundness styles
         const roundness = {
             none: "rounded-none",
             sm: "rounded-sm",
@@ -79,37 +58,40 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             full: "rounded-full",
         };
 
-        // Color schemes (primary is first)
+        // Focus ring styles - less distracting options
+        const focusStyles = {
+            none: "focus:outline-none",
+            subtle: "focus:outline-none focus:ring-1 focus:ring-[var(--theme-primary)]/30 focus:ring-offset-1 focus:ring-offset-[var(--theme-bg-start)]",
+            ring: "focus:outline-none focus:ring-2 focus:ring-[var(--theme-primary)]/50 focus:ring-offset-2 focus:ring-offset-[var(--theme-bg-start)]",
+            glow: "focus:outline-none focus:shadow-[0_0_0_2px_var(--theme-bg-start),0_0_0_4px_var(--theme-primary)]",
+        };
+
+        // Using CSS variables for colors - these will change with theme
         const colorStyles = {
             primary: {
-                solid: "bg-primary text-white hover:bg-primary-hover focus:ring-2 focus:ring-primary/50",
-                outline:
-                    "border-2 border-primary text-primary hover:bg-primary/10 focus:ring-2 focus:ring-primary/50",
-                ghost: "text-primary hover:bg-primary/10 focus:ring-2 focus:ring-primary/50",
+                solid: "bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)]",
+                outline: "border-2 border-[var(--theme-primary)] text-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/10",
+                ghost: "text-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/10",
             },
             secondary: {
-                solid: "bg-slate-700 text-white hover:bg-slate-600 focus:ring-2 focus:ring-slate-500/50",
-                outline:
-                    "border-2 border-slate-600 text-slate-300 hover:bg-slate-800 focus:ring-2 focus:ring-slate-500/50",
-                ghost: "text-slate-300 hover:bg-slate-800 focus:ring-2 focus:ring-slate-500/50",
+                solid: "bg-[var(--theme-secondary)] text-white hover:bg-[var(--theme-secondary-hover)]",
+                outline: "border-2 border-[var(--theme-secondary)] text-[var(--theme-secondary)] hover:bg-[var(--theme-secondary)]/10",
+                ghost: "text-[var(--theme-secondary)] hover:bg-[var(--theme-secondary)]/10",
             },
             danger: {
-                solid: "bg-red-600 text-white hover:bg-red-700 focus:ring-2 focus:ring-red-500/50",
-                outline:
-                    "border-2 border-red-500/50 text-red-400 hover:bg-red-500/10 focus:ring-2 focus:ring-red-500/50",
-                ghost: "text-red-400 hover:bg-red-500/10 focus:ring-2 focus:ring-red-500/50",
+                solid: "bg-[var(--theme-danger)] text-white hover:bg-[var(--theme-danger)]/90",
+                outline: "border-2 border-[var(--theme-danger)]/50 text-[var(--theme-danger)] hover:bg-[var(--theme-danger)]/30 focus:outline-none",
+                ghost: "text-[var(--theme-danger)] hover:bg-[var(--theme-danger)]/10",
             },
             success: {
-                solid: "bg-green-600 text-white hover:bg-green-700 focus:ring-2 focus:ring-green-500/50",
-                outline:
-                    "border-2 border-green-500/50 text-green-400 hover:bg-green-500/10 focus:ring-2 focus:ring-green-500/50",
-                ghost: "text-green-400 hover:bg-green-500/10 focus:ring-2 focus:ring-green-500/50",
+                solid: "bg-[var(--theme-success)] text-white hover:bg-[var(--theme-success)]/90",
+                outline: "border-2 border-[var(--theme-success)]/50 text-[var(--theme-success)] hover:bg-[var(--theme-success)]/10",
+                ghost: "text-[var(--theme-success)] hover:bg-[var(--theme-success)]/10",
             },
             warning: {
-                solid: "bg-yellow-600 text-white hover:bg-yellow-700 focus:ring-2 focus:ring-yellow-500/50",
-                outline:
-                    "border-2 border-yellow-500/50 text-yellow-400 hover:bg-yellow-500/10 focus:ring-2 focus:ring-yellow-500/50",
-                ghost: "text-yellow-400 hover:bg-yellow-500/10 focus:ring-2 focus:ring-yellow-500/50",
+                solid: "bg-[var(--theme-warning)] text-white hover:bg-[var(--theme-warning)]/90",
+                outline: "border-2 border-[var(--theme-warning)]/50 text-[var(--theme-warning)] hover:bg-[var(--theme-warning)]/10",
+                ghost: "text-[var(--theme-warning)] hover:bg-[var(--theme-warning)]/10",
             },
         };
 
@@ -118,23 +100,23 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                 ref={ref}
                 disabled={disabled || loading}
                 className={`
-          ${baseStyles}
-          ${animationStyles}
-          ${disabledStyles}
-          ${colorStyles[colorScheme][variant]}
-          ${sizes[size]}
-          ${roundness[rounded]}
-          ${fullWidth ? "w-full" : ""}
-          ${className}
-        `}
+                    ${baseStyles}
+                    ${animationStyles}
+                    ${disabledStyles}
+                    ${focusStyles[focusRing]}
+                    ${colorStyles[colorScheme][variant]}
+                    ${sizes[size]}
+                    ${roundness[rounded]}
+                    ${fullWidth ? "w-full" : ""}
+                    ${className}
+                `}
                 {...props}
             >
-                {/* Loading Spinner */}
                 {loading && (
-                    <svg
-                        className="animate-spin h-4 w-4"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
+                    <svg 
+                        className="animate-spin h-4 w-4" 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        fill="none" 
                         viewBox="0 0 24 24"
                     >
                         <circle
@@ -152,19 +134,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                         />
                     </svg>
                 )}
-
-                {/* Left Icon */}
-                {!loading && leftIcon && (
-                    <span className="inline-flex">{leftIcon}</span>
-                )}
-
-                {/* Children */}
+                {!loading && leftIcon && <span className="inline-flex">{leftIcon}</span>}
                 {children}
-
-                {/* Right Icon */}
-                {!loading && rightIcon && (
-                    <span className="inline-flex">{rightIcon}</span>
-                )}
+                {!loading && rightIcon && <span className="inline-flex">{rightIcon}</span>}
             </button>
         );
     },

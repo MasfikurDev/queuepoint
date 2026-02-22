@@ -20,12 +20,12 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
+        <div className="min-h-screen flex items-center justify-center">
             <Card>
                 <CardHeader>
                     <CardTitle>Welcome back</CardTitle>
                     <CardDescription>
-                        Sign in to manage your queues
+                        Sign in to manage your Queues
                     </CardDescription>
                 </CardHeader>
 
@@ -50,7 +50,7 @@ export default function LoginPage() {
                     </Button>
                 </div>
 
-                <CardFooter>
+                <CardFooter className="text-(--theme-text-primary)">
                     This is a mock login. Authentication coming soon.
                 </CardFooter>
             </Card>

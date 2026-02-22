@@ -7,10 +7,10 @@ export default function ProfilePage() {
     const { user, logout } = useAuth();
 
     return (
-        <div className="min-h-screen bg-linear-to-br from-slate-900 via-slate-800 to-slate-900">
+        <div className="min-h-screen">
             <div className="mx-auto max-w-4xl px-6 py-10">
                 {/* Header with Avatar */}
-                <div className="mb-8 flex items-center gap-4">
+                <div className="mb-8 flex items-center gap-4 bg-(--theme-surface-hover) border border-(--theme-surface-border) rounded-lg px-6 py-4">
                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-xl font-semibold text-white">
                         {user?.name?.[0] ?? "U"}
                     </div>
@@ -53,8 +53,8 @@ export default function ProfilePage() {
                 </Card>
 
                 {/* Actions */}
-                <div className="mt-8 flex items-center justify-between">
-                    <p className="text-xs text-slate-500">
+                <div className="mt-8 flex items-center justify-between w-full bg-(--theme-surface-hover) border border-(--theme-surface-border) rounded-lg px-6 py-4">
+                    <p className="text-xs">
                         Editing will be enabled once backend auth is connected.
                     </p>
 

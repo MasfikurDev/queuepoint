@@ -1,6 +1,162 @@
 @import "tailwindcss";
 
 @theme {
-    --color-primary: #155dfb;
-    --color-primary-hover: #2b7fff;
+    /* Default theme (Slate) */
+    --theme-bg-start: #0f172a; /* slate-900 */
+    --theme-bg-mid: #1e293b; /* slate-800 */
+    --theme-bg-end: #0f172a; /* slate-900 */
+
+    /* Surface colors */
+    --theme-surface: rgba(15, 23, 42, 0.7); /* slate-900/70 */
+    --theme-surface-border: rgba(255, 255, 255, 0.1);
+    --theme-surface-hover: #1e293b; /* slate-800 */
+
+    /* Text colors */
+    --theme-text-primary: #ffffff;
+    --theme-text-secondary: #94a3b8; /* slate-400 */
+    --theme-text-muted: #64748b; /* slate-500 */
+
+    /* Brand colors - Primary */
+    --theme-primary: #3b82f6; /* blue-500 */
+    --theme-primary-hover: #2563eb; /* blue-600 */
+    --theme-primary-light: #60a5fa; /* blue-400 */
+    --theme-primary-dark: #1d4ed8; /* blue-700 */
+
+    /* Brand colors - Secondary (you were missing these) */
+    --theme-secondary: #64748b; /* slate-500 */
+    --theme-secondary-hover: #475569; /* slate-600 */
+    --theme-secondary-light: #94a3b8; /* slate-400 */
+    --theme-secondary-dark: #334155; /* slate-700 */
+
+    /* Status colors */
+    --theme-success: #22c55e; /* green-500 */
+    --theme-success-hover: #16a34a; /* green-600 */
+    --theme-success-light: #4ade80; /* green-400 */
+    --theme-success-dark: #15803d; /* green-700 */
+
+    --theme-danger: #ef4444; /* red-500 */
+    --theme-danger-hover: #dc2626; /* red-600 */
+    --theme-danger-light: #f87171; /* red-400 */
+    --theme-danger-dark: #b91c1c; /* red-700 */
+
+    --theme-warning: #eab308; /* yellow-500 */
+    --theme-warning-hover: #ca8a04; /* yellow-600 */
+    --theme-warning-light: #facc15; /* yellow-400 */
+    --theme-warning-dark: #a16207; /* yellow-700 */
+
+    --theme-info: #3b82f6; /* blue-500 */
+    --theme-info-hover: #2563eb; /* blue-600 */
+
+    /* Gradients */
+    --gradient-page: linear-gradient(
+        to bottom right,
+        var(--theme-bg-start),
+        var(--theme-bg-mid),
+        var(--theme-bg-end)
+    );
+
+    /* Additional useful gradients */
+    --gradient-surface: linear-gradient(
+        to bottom right,
+        var(--theme-surface),
+        var(--theme-surface-hover)
+    );
+
+    --gradient-primary: linear-gradient(
+        to right,
+        var(--theme-primary),
+        var(--theme-primary-light)
+    );
+}
+
+/* Dark theme (future) */
+[data-theme="dark"] {
+    --theme-bg-start: #020617; /* slate-950 */
+    --theme-bg-mid: #0f172a; /* slate-900 */
+    --theme-bg-end: #020617; /* slate-950 */
+    --theme-surface: rgba(2, 6, 23, 0.8);
+    --theme-surface-border: rgba(255, 255, 255, 0.05);
+    --theme-surface-hover: #0f172a;
+
+    --theme-text-primary: #f8fafc;
+    --theme-text-secondary: #94a3b8;
+    --theme-text-muted: #64748b;
+
+    --theme-primary: #000; /* black for dark mode */
+    --theme-primary-hover: #1e293b; /* slate-800 */
+    --theme-primary-light: #475569; /* slate-600 */
+
+    --theme-secondary: #475569;
+    --theme-secondary-hover: #334155;
+
+    --theme-success: #22c55e;
+    --theme-danger: #ef4444;
+    --theme-warning: #eab308;
+}
+
+/* Ocean theme (future) */
+[data-theme="ocean"] {
+    --theme-bg-start: #0c4a6e; /* blue-900 */
+    --theme-bg-mid: #0369a1; /* blue-800 */
+    --theme-bg-end: #0c4a6e; /* blue-900 */
+    --theme-surface: rgba(12, 74, 110, 0.7);
+    --theme-surface-border: rgba(255, 255, 255, 0.15);
+    --theme-surface-hover: #0369a1;
+
+    --theme-text-primary: #ffffff;
+    --theme-text-secondary: #bae6fd; /* blue-200 */
+    --theme-text-muted: #7dd3fc; /* blue-300 */
+
+    --theme-primary: #38bdf8; /* blue-400 */
+    --theme-primary-hover: #7dd3fc; /* blue-300 */
+    --theme-primary-light: #bae6fd; /* blue-200 */
+
+    --theme-secondary: #0c4a6e; /* blue-900 */
+    --theme-secondary-hover: #0369a1; /* blue-800 */
+}
+
+/* Forest theme (future) */
+[data-theme="forest"] {
+    --theme-bg-start: #14532d; /* green-900 */
+    --theme-bg-mid: #166534; /* green-800 */
+    --theme-bg-end: #14532d; /* green-900 */
+    --theme-surface: rgba(20, 83, 45, 0.7);
+    --theme-surface-border: rgba(255, 255, 255, 0.1);
+    --theme-surface-hover: #166534;
+
+    --theme-text-primary: #ffffff;
+    --theme-text-secondary: #bbf7d0; /* green-200 */
+    --theme-text-muted: #86efac; /* green-300 */
+
+    --theme-primary: #4ade80; /* green-400 */
+    --theme-primary-hover: #86efac; /* green-300 */
+    --theme-primary-light: #bbf7d0; /* green-200 */
+
+    --theme-secondary: #14532d; /* green-900 */
+    --theme-secondary-hover: #166534; /* green-800 */
+}
+
+/* Apply default theme */
+body {
+    background: var(--theme-surface);
+    min-height: 100vh;
+    margin: 0;
+    color: var(--theme-text-primary);
+    transition: all 0.3s ease;
+}
+
+/* Smooth theme transitions for common properties */
+* {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 200ms;
+    transition-timing-function: ease;
+}
+
+/* Optional: Add a subtle pattern overlay */
+.bg-pattern {
+    background-image: radial-gradient(
+        rgba(255, 255, 255, 0.05) 1px,
+        transparent 1px
+    );
+    background-size: 30px 30px;
 }

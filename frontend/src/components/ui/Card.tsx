@@ -6,19 +6,19 @@ interface CardProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ className, variant = "glass", children, ...props }, ref) => {
+    ({ className, variant = "default", children, ...props }, ref) => {
+        const variants = {
+            default:
+                "bg-[var(--theme-surface-hover)] border border-[var(--theme-surface-border)] p-6 shadow-md",
+            glass: "backdrop-blur border border-[var(--theme-surface-border)] p-6 shadow-xl bg-[var(--theme-surface-hover)/80]",
+        };
+
         return (
             <div
                 ref={ref}
                 className={cn(
-                    "w-full max-w-md rounded-2xl p-8",
-                    variant === "glass" && [
-                        "bg-slate-900/70 backdrop-blur",
-                        "border border-white/10",
-                        "shadow-xl",
-                    ],
-                    variant === "default" &&
-                        "bg-slate-900 border border-slate-800",
+                    "w-full max-w-md rounded-2xl",
+                    variants[variant],
                     className,
                 )}
                 {...props}
@@ -46,7 +46,7 @@ export const CardTitle = forwardRef<
     <h1
         ref={ref}
         className={cn(
-            "text-3xl font-semibold text-white tracking-tight",
+            "text-3xl font-semibold tracking-tight text-(--theme-text-primary)",
             className,
         )}
         {...props}
@@ -60,7 +60,7 @@ export const CardDescription = forwardRef<
 >(({ className, ...props }, ref) => (
     <p
         ref={ref}
-        className={cn("mt-2 text-sm text-slate-400", className)}
+        className={cn("mt-2 text-sm text-(--theme-text-secondary)", className)}
         {...props}
     />
 ));
@@ -72,7 +72,10 @@ export const CardFooter = forwardRef<
 >(({ className, ...props }, ref) => (
     <div
         ref={ref}
-        className={cn("mt-6 text-center text-xs text-slate-500", className)}
+        className={cn(
+            "mt-6 text-center text-xs text-(--theme-text-muted)",
+            className,
+        )}
         {...props}
     />
 ));
