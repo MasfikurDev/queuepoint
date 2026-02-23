@@ -1,5 +1,5 @@
 import { type HTMLAttributes, forwardRef } from "react";
-import { cn } from "../../lib/utils";
+import { cn } from "@lib/utils";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
     variant?: "default" | "glass";
@@ -10,7 +10,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         const variants = {
             default:
                 "bg-[var(--theme-surface-hover)] border border-[var(--theme-surface-border)] p-6 shadow-md",
-            glass: "backdrop-blur border border-[var(--theme-surface-border)] p-6 shadow-xl bg-[var(--theme-surface-hover)/80]",
+            glass: "bg-[var(--theme-surface)] backdrop-blur border border-[var(--theme-surface-border)] p-6 shadow-xl",
         };
 
         return (

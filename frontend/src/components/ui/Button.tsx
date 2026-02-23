@@ -71,7 +71,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             primary: {
                 solid: "bg-[var(--theme-primary)] text-white hover:bg-[var(--theme-primary-hover)]",
                 outline: "border-2 border-[var(--theme-primary)] text-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/10",
-                ghost: "text-[var(--theme-primary)] hover:bg-[var(--theme-primary)]/10",
+                ghost: "text-[var(--theme-text-primary)] hover:bg-[var(--theme-primary)]/10",
             },
             secondary: {
                 solid: "bg-[var(--theme-secondary)] text-white hover:bg-[var(--theme-secondary-hover)]",
