@@ -1,8 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
-import { ProtectedRoute } from "../components/ProtectedRoute";
+import { ProtectedRoute } from "@components/ProtectedRoute";
 
-import LoginPage from "../pages/auth/LoginPage";
-import ProfilePage from "../pages/user/ProfilePage";
+import IndexPage from "@pages/IndexPage";
+import LoginPage from "@pages/auth/login/LoginPage";
+import ProfilePage from "@pages/user/profile/ProfilePage";
 
 export const router = createBrowserRouter([
     {
@@ -11,11 +12,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/",
-        element: (
-            <ProtectedRoute>
-                <ProfilePage />
-            </ProtectedRoute>
-        ),
+        element: <IndexPage />,
     },
     {
         path: "/profile",
