@@ -1,14 +1,14 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/useAuth";
-import { Button } from "../../components/ui/Button";
-import { Input } from "../../components/ui/Input";
+import { useAuth } from "@hooks/useAuth";
+import { Button } from "@ui/Button";
+import { Input } from "@ui/Input";
 import {
     Card,
     CardHeader,
     CardTitle,
     CardDescription,
     CardFooter,
-} from "../../components/ui/Card";
+} from "@ui/Card";
 
 export default function LoginPage() {
     const { login } = useAuth();
@@ -21,7 +21,7 @@ export default function LoginPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center">
-            <Card>
+            <Card variant="glass">
                 <CardHeader>
                     <CardTitle>Welcome back</CardTitle>
                     <CardDescription>

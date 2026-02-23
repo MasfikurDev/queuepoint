@@ -1,7 +1,7 @@
-import { useAuth } from "../../hooks/useAuth";
-import { Card, CardHeader, CardTitle } from "../../components/ui/Card";
-import { Input } from "../../components/ui/Input";
-import { Button } from "../../components/ui/Button";
+import { useAuth } from "@hooks/useAuth";
+import { Card, CardHeader, CardTitle } from "@ui/Card";
+import { Input } from "@ui/Input";
+import { Button } from "@ui/Button";
 
 export default function ProfilePage() {
     const { user, logout } = useAuth();

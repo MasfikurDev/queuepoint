@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { auth, type AuthUser } from "../lib/auth";
+import { auth, type AuthUser } from "@lib/auth";
 import { useNavigate } from "react-router-dom";
 
 export function useAuth() {
